@@ -17,10 +17,9 @@ bool ReadNumber(Number& result)
     if (isValidNumber(input, value)) {
         result = value;
         return true;
-    } else {
-        std::cerr << "Error: Numeric operand expected" << std::endl;
-        return false;
     }
+    std::cerr << "Error: Numeric operand expected" << std::endl;
+    return false;
 }
 
 bool RunCalculatorCycle()
@@ -40,10 +39,9 @@ bool RunCalculatorCycle()
                 currentValue = firstNum;
                 isFirst = false;
                 continue;
-            } else {
-                std::cerr << "Error: Numeric operand expected" << std::endl;
-                return false;
             }
+            std::cerr << "Error: Numeric operand expected" << std::endl;
+            return false;
         }
 
         if (token == "q") {
@@ -183,7 +181,6 @@ static bool isValidNumber(const std::string& str, Number& result) {
     }
     
     if (pos == str.length() && hasDigit) {
-        char* endptr;
         result = std::atof(str.c_str());
         return true;
     } else {
