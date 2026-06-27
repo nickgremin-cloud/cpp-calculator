@@ -21,7 +21,8 @@ static QString NormalizeNumber(const QString &text) {
         return NormalizeNumber("0" + text);
     }
     if (text.startsWith('-')) {
-        return "-" + NormalizeNumber(text.mid(1));
+        QString normalized = NormalizeNumber(text.mid(1));
+        return normalized == "0" ? "0" : "-" + normalized;
     }
     if (text.startsWith('0') && !text.startsWith("0.")) {
         return NormalizeNumber(RemoveTrailingZeroes(text));
@@ -123,6 +124,9 @@ MainWindow::MainWindow(QWidget* parent)
                 active_number_ = 0;
                 need_fresh_input_ = false;
             }
+            if (current_operation_ == Operation::NO_OPERATION) {
+                l_formula->setText("");
+            }
             if (input_number_.isEmpty()) {
                 input_number_ = QString::number(active_number_);
             }
@@ -195,6 +199,15 @@ void MainWindow::AddText(const QString& suffix) {
 void MainWindow::SetOperation(Operation op) {
     if (current_operation_ == Operation::NO_OPERATION) {
         calculator_.Set(active_number_);
+    } else {
+        switch (current_operation_) {
+        case Operation::ADDITION:       calculator_.Add(active_number_); break;
+        case Operation::SUBTRACTION:    calculator_.Sub(active_number_); break;
+        case Operation::MULTIPLICATION: calculator_.Mul(active_number_); break;
+        case Operation::DIVISION:       calculator_.Div(active_number_); break;
+        case Operation::POWER:          calculator_.Pow(active_number_); break;
+        default: break;
+        }
     }
     current_operation_ = op;
     l_formula->setText(QString::number(calculator_.GetNumber()) + " " + OpToString(op));
@@ -208,6 +221,9 @@ void MainWindow::OnDotClicked() {
         active_number_ = 0;
         need_fresh_input_ = false;
     }
+    if (current_operation_ == Operation::NO_OPERATION) {
+        l_formula->setText("");
+    }
     if (input_number_.isEmpty()) {
         input_number_ = QString::number(active_number_);
     }
@@ -217,6 +233,7 @@ void MainWindow::OnDotClicked() {
 }
 
 void MainWindow::OnPlusMinusClicked() {
+    if (input_number_.isEmpty()) return;
     if (need_fresh_input_) {
         input_number_ = "";
         active_number_ = 0;
@@ -276,6 +293,9 @@ void MainWindow::OnMemoryStoreClicked() {
 
 void MainWindow::OnMemoryRecallClicked() {
     if (!has_memory_) return;
+    if (current_operation_ == Operation::NO_OPERATION) {
+        l_formula->setText("");
+    }
     active_number_ = memory_value_;
     l_result->setText(QString::number(active_number_));
     input_number_ = "";
