@@ -1,5 +1,4 @@
 #pragma once
-
 #include "calculator.h"
 
 #include <QMainWindow>
