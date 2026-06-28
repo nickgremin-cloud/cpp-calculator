@@ -200,7 +200,7 @@ void MainWindow::AddText(const QString& suffix) {
 void MainWindow::SetOperation(Operation op) {
     if (current_operation_ == Operation::NO_OPERATION) {
         calculator_.Set(active_number_);
-    } else {
+    } else if (!need_fresh_input_) {
         switch (current_operation_) {
         case Operation::ADDITION:       calculator_.Add(active_number_); break;
         case Operation::SUBTRACTION:    calculator_.Sub(active_number_); break;
@@ -235,14 +235,6 @@ void MainWindow::OnDotClicked() {
 
 void MainWindow::OnPlusMinusClicked() {
     if (input_number_.isEmpty()) return;
-    if (need_fresh_input_) {
-        input_number_ = "";
-        active_number_ = 0;
-        need_fresh_input_ = false;
-    }
-    if (input_number_.isEmpty()) {
-        input_number_ = QString::number(active_number_);
-    }
     if (input_number_.startsWith("-")) {
         SetText(input_number_.mid(1));
     } else {

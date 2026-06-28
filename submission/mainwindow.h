@@ -24,6 +24,7 @@ inline QString OpToString(Operation op) {
     case Operation::MULTIPLICATION: return "×";
     case Operation::SUBTRACTION: return "−";
     case Operation::POWER: return "^";
+    default: return "";
     }
 }
 
@@ -54,7 +55,7 @@ private:
     Number active_number_;
     Operation current_operation_ = Operation::NO_OPERATION;
 
-    double memory_value_ = 0.0;
+    Number memory_value_ = 0.0;
     bool has_memory_ = false;
     bool need_fresh_input_ = false;
 
